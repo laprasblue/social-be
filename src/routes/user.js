@@ -17,16 +17,21 @@ userRoute.post(
         throw new Error('This email is used!!!')
       }
     }),
+  body('password')
+    .isStrongPassword({ minLength: 8 })
+    .withMessage(
+      'Password must have at least 8 characters. Having 1 special character, 1 uppercase character (A-Z) and 1 digit (0-9)'
+    ),
   body('firstName')
     .notEmpty()
     .withMessage('firstName cannot be null')
     .isLength({ min: 4, max: 32 })
-    .withMessage('First name must have min 4 and max 32 characters'),
+    .withMessage('firstName must have min 4 and max 32 characters'),
   body('lastName')
     .notEmpty()
     .withMessage('lastName cannot be null')
     .isLength({ min: 4, max: 32 })
-    .withMessage('Last name must have min 4 and max 32 characters'),
+    .withMessage('lastName must have min 4 and max 32 characters'),
   body('phone')
     .isMobilePhone('vi-VN')
     .withMessage('Must be a valid phone number')
@@ -42,6 +47,11 @@ userRoute.post(
 )
 userRoute.get('/:id', getOneUser)
 userRoute.get('/', paginate(UserService), getAllUser)
-userRoute.delete('/', body('id').notEmpty().withMessage('firstName cannot be null'), validateParams, deleteUser)
+userRoute.delete(
+  '/',
+  body('id').notEmpty().withMessage('firstName cannot be null'),
+  validateParams,
+  deleteUser
+)
 
 module.exports = userRoute
