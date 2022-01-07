@@ -2,7 +2,7 @@ const jwt = require('jsonwebtoken')
 
 module.exports.createToken = async (profile) => {
   return await jwt.sign(
-    { email: profile.email, firstName: profile.email, lastName: profile.lastName },
+    { email: profile.email, firstName: profile.firstName, lastName: profile.lastName },
     process.env.ACCESS_TOKEN_SECRET || '122@111!!~',
     { expiresIn: profile.exp }
   )
