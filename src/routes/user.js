@@ -5,6 +5,7 @@ const { body } = require('express-validator')
 const { validateParams } = require('../middlewares/validateParams')
 const UserService = require('../services/User')
 const paginate = require('../middlewares/paginate')
+const { createToken, createRefreshToken } = require('../middlewares/token')
 
 userRoute.post(
   '/',
@@ -43,6 +44,8 @@ userRoute.post(
     }),
   body('isActive').isBoolean().withMessage('Must be a boolean value'),
   validateParams,
+  createToken,
+  createRefreshToken,
   createUser
 )
 userRoute.get('/:id', getOneUser)

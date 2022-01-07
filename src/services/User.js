@@ -16,11 +16,28 @@ const findById = async (id) => {
   return await User.findById(id)
 }
 
-const findAll = async (limit, startIndex) => {
-  return await User.find().limit(limit).skip(startIndex).exec()
+const findAll = async (limit, startIndex, search) => {
+  return await User.find({
+    $or: [
+      { email: { $regex: search, $options: 'i' } },
+      { firstName: { $regex: search, $options: 'i' } },
+      { lastName: { $regex: search, $options: 'i' } },
+    ],
+  })
+    .limit(limit)
+    .skip(startIndex)
+    .exec()
 }
-const countDocs = async () => {
-  return await User.countDocuments().exec()
+const countDocs = async (search) => {
+  return await User.find({
+    $or: [
+      { email: { $regex: search, $options: 'i' } },
+      { firstName: { $regex: search, $options: 'i' } },
+      { lastName: { $regex: search, $options: 'i' } },
+    ],
+  })
+    .countDocuments()
+    .exec()
 }
 const deleteById = async (id) => {
   return await User.deleteOne({ _id: id })

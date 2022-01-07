@@ -1,17 +1,34 @@
 const UserService = require('../services/User')
+const RefreshTokenService = require('../services/RefreshToken')
+const { hashPassword } = require('../utils/password')
 
 module.exports.createUser = async (req, res) => {
   const { email, password, firstName, lastName, phone } = req.body
+
   try {
-    const user = await UserService.createUser({ email, password, firstName, lastName, phone })
+    const hashPass = await hashPassword(password)
+    const user = await UserService.createUser({
+      email,
+      password: hashPass,
+      firstName,
+      lastName,
+      phone,
+    })
+    await RefreshTokenService.createRefreshToken({
+      userId: user.id,
+      refreshToken: req.refreshToken,
+    })
     res.status(201).json({
       msg: 'Created User',
+      token: req.token,
+      refreshToken: req.refreshToken,
     })
   } catch (error) {
     console.log(error)
     return res.sendStatus(500)
   }
 }
+
 module.exports.getOneUser = async (req, res) => {
   try {
     let user = await UserService.findById(req.params.id)
@@ -32,6 +49,7 @@ module.exports.getOneUser = async (req, res) => {
     })
   }
 }
+
 module.exports.deleteUser = async (req, res) => {
   try {
     const result = await UserService.deleteById(req.body.id)
@@ -50,6 +68,7 @@ module.exports.deleteUser = async (req, res) => {
     return res.sendStatus(500)
   }
 }
+
 module.exports.getAllUser = async (req, res) => {
   try {
     const users = res.paginatedResults
@@ -86,6 +105,3 @@ module.exports.getAllUser = async (req, res) => {
     })
   }
 }
-// module.exports.createUser = async (req, res) => {
-//   res.sendStatus(200)
-// }

@@ -1,5 +1,6 @@
 const express = require('express')
 const googleAuth = require('google-auth-library')
+const { login } = require('../controllers/auth')
 const authRoute = express.Router()
 
 authRoute.get('/', async (req, res) => {
@@ -13,8 +14,7 @@ authRoute.get('/', async (req, res) => {
 
     const data = await client.verifyIdToken({
       idToken: token,
-      audience:
-        '50194389862-48ijhbjal0giqpc79hgi76btdh463dm0.apps.googleusercontent.com',
+      audience: '50194389862-48ijhbjal0giqpc79hgi76btdh463dm0.apps.googleusercontent.com',
     })
     console.log(data)
     return res.sendStatus(200)
@@ -23,5 +23,7 @@ authRoute.get('/', async (req, res) => {
     return res.sendStatus(500)
   }
 })
+
+authRoute.post('/login', login)
 
 module.exports = authRoute

@@ -6,6 +6,8 @@ const dotenv = require('dotenv')
 const helmet = require('helmet')
 
 const connectDatabase = require('./utils/connectDatabase')
+const { getToken } = require('./middlewares/token')
+const { isTokenValid } = require('./utils/token')
 dotenv.config()
 connectDatabase()
 
